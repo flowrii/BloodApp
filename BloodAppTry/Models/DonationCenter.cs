@@ -9,6 +9,7 @@
         public int OpensAt { get; set; }
         public int ClosesAt { get; set; }
         public int BloodBankID { get; set; }
+        public int maxDayAppointments { get; set; }
 
         public ICollection<Doctor> Doctors { get; set; }
         public ICollection<Appointment> Appointments { get; set; }
