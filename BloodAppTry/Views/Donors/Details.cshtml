@@ -62,8 +62,8 @@
         <dd class="col-sm-10">
             <table class="table">
                 <tr>
-                    <th>Course Title</th>
-                    <th>Grade</th>
+                    <th>Donation Center</th>
+                    <th>Date</th>
                 </tr>
                 @if (Model.Appointments != null)
                 {
@@ -71,6 +71,7 @@
                     {
                         <tr>
                             <td>
+                                @Html.DisplayFor(modelItem => item.DonationCenter.Address)
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>
                         </tr>
@@ -87,4 +88,9 @@
     {
         <a asp-action="Index">Back to List</a>
     }
+    else if (Accessor.HttpContext.Session.GetString("Type") != null && Accessor.HttpContext.Session.GetString("Type") == "Donor")
+    {
+        <a asp-action="Delete" asp-route-id="@Accessor.HttpContext.Session.GetString("ID")">Delete</a>
+    }
+
 </div>

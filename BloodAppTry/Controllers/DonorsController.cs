@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BloodAppTry.Data;
 using BloodAppTry.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BloodAppTry.Controllers
 {
@@ -157,6 +158,13 @@ namespace BloodAppTry.Controllers
             }
 
             await _context.SaveChangesAsync();
+            if (HttpContext.Session.GetString("Type") == "Donor")
+            {
+                HttpContext.Session.Remove("Username");
+                HttpContext.Session.Remove("Type");
+                HttpContext.Session.Remove("ID");
+                return RedirectToAction("Index", "Home");
+            }
             return RedirectToAction(nameof(Index));
         }
 
