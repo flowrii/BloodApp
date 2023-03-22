@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BloodAppTry.Data;
 using BloodAppTry.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BloodAppTry.Controllers
 {
@@ -59,14 +60,16 @@ namespace BloodAppTry.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DonorID,DonationCenterID,Date")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Id,DonorID,DonationCenterID,Date,StatusA")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
+                appointment.StatusA = Status.Pending;
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            
             ViewData["DonationCenterID"] = new SelectList(_context.DonationCenters, "DonationCenterID", "DonationCenterID", appointment.DonationCenterID);
             ViewData["DonorID"] = new SelectList(_context.Donors, "DonorID", "DonorID", appointment.DonorID);
             return View(appointment);
@@ -95,7 +98,7 @@ namespace BloodAppTry.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DonorID,DonationCenterID,Date")] Appointment appointment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DonorID,DonationCenterID,Date,StatusA")] Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -159,7 +162,12 @@ namespace BloodAppTry.Controllers
             var appointment = await _context.Appointments.FindAsync(id);
             if (appointment != null)
             {
-                _context.Appointments.Remove(appointment);
+                if (appointment.Date > DateTime.Now)
+                    _context.Appointments.Remove(appointment);
+                else
+                {
+                    TempData["ErrorD"] = "You can only delete future appointments!";
+                }
             }
             
             await _context.SaveChangesAsync();

@@ -1,4 +1,7 @@
-﻿@model IEnumerable<BloodAppTry.Models.Appointment>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+
+@model IEnumerable<BloodAppTry.Models.Appointment>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,39 +12,125 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@{
+    if (TempData.ContainsKey("ErrorD"))
+    {
+        <div>
+            <span style="background:red">@TempData["ErrorD"].ToString()</span>
+        </div>
+    }
+}
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Donor)
-            </th>
+            @if (@Accessor.HttpContext.Session.GetString("Username") != null &&
+            (@Accessor.HttpContext.Session.GetString("Type") == "Donor" || @Accessor.HttpContext.Session.GetString("Type") == "Doctor"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Donor.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Donor.LastName)
+                </th>
+            }
+            else
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Donor)
+                </th>
+            }
             <th>
                 @Html.DisplayNameFor(model => model.DonationCenter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StatusA)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Donor.DonorID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DonationCenter.DonationCenterID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            @if (@Accessor.HttpContext.Session.GetString("Username") != null && @Accessor.HttpContext.Session.GetString("Type") == "Admin")
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Donor.DonorID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DonationCenter.DonationCenterID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StatusA)
+                    </td>
+                    <td>
+
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+            else @if (@Accessor.HttpContext.Session.GetString("Username") != null && @Accessor.HttpContext.Session.GetString("Type") == "Donor")
+            {
+                if (item.DonorID.ToString() == @Accessor.HttpContext.Session.GetString("ID"))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Donor.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Donor.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DonationCenter.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusA)
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else @if (@Accessor.HttpContext.Session.GetString("Username") != null && @Accessor.HttpContext.Session.GetString("Type") == "Doctor")
+            {
+                if (item.DonationCenterID.ToString() == @Accessor.HttpContext.Session.GetString("DonationCenterID"))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Donor.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Donor.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DonationCenter.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StatusA)
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
     </tbody>
 </table>

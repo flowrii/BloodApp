@@ -43,11 +43,23 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="BloodBanks" asp-action="Index">Blood Banks</a>
+                            </li>
                         }
                         @if (@Accessor.HttpContext.Session.GetString("Username") != null && @Accessor.HttpContext.Session.GetString("Type") == "Donor")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="DonationCenters" asp-action="Index">Donation Centers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
+                            </li>
+                        }
+                        @if (@Accessor.HttpContext.Session.GetString("Username") != null && @Accessor.HttpContext.Session.GetString("Type") == "Doctor")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
                             </li>
                         }
                     </ul>

@@ -25,26 +25,6 @@ namespace BloodAppTry.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserRegistrationModel model)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    var user = new Donor { Username = model.Username, Email=model.Email, FirstName=model.FirstName, LastName=model.LastName };
-            //    var result = await _userManager.CreateAsync(user, model.Password);
-
-            //    if (result.Succeeded)
-            //    {
-            //        await _signManager.SignInAsync(user, false);
-            //        return RedirectToAction("Index", "Home");
-            //    }
-            //    else
-            //    {
-            //        foreach (var error in result.Errors)
-            //        {
-            //            ModelState.AddModelError("", error.Description);
-            //        }
-            //    }
-            //}
-            //return View();
-
             if (model.Username == "" || model.Email == "" || model.FirstName == "" || model.LastName == "" || model.Password == "" || model.Area == "" || model.BloodGroup == "")
             {
                 ModelState.AddModelError("", "Fill all the fields");
@@ -79,6 +59,7 @@ namespace BloodAppTry.Controllers
             bool ok = false;
             string type = "";
             int id = -1;
+            int donationCenterID = -1;
 
             if (model.Username == "" || model.Password == "")
             {
@@ -109,6 +90,7 @@ namespace BloodAppTry.Controllers
                         ok = true;
                         type = "Doctor";
                         id = doctors.ElementAt(i).DoctorID;
+                        donationCenterID = doctors.ElementAt(i).DonationCenterID;
                     }
                 if (!ok)
                 {
@@ -119,6 +101,11 @@ namespace BloodAppTry.Controllers
                     HttpContext.Session.SetString("Username", model.Username);
                     HttpContext.Session.SetString("Type", type);
                     HttpContext.Session.SetString("ID", id.ToString());
+
+                    if(type=="Doctor")
+                    {
+                        HttpContext.Session.SetString("DonationCenterID", donationCenterID.ToString());
+                    }
 
                     return RedirectToAction("Index", "Home");
                 }
