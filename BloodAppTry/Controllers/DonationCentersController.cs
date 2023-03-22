@@ -57,7 +57,7 @@ namespace BloodAppTry.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DonationCenterID,Area,Address,IsActive,OpensAt,ClosesAt,BloodBankID")] DonationCenter donationCenter)
+        public async Task<IActionResult> Create([Bind("DonationCenterID,Area,Address,IsActive,OpensAt,ClosesAt,BloodBankID,maxDayAppointments")] DonationCenter donationCenter)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace BloodAppTry.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DonationCenterID,Area,Address,IsActive,OpensAt,ClosesAt,BloodBankID")] DonationCenter donationCenter)
+        public async Task<IActionResult> Edit(int id, [Bind("DonationCenterID,Area,Address,IsActive,OpensAt,ClosesAt,BloodBankID,maxDayAppointments")] DonationCenter donationCenter)
         {
             if (id != donationCenter.DonationCenterID)
             {
